@@ -32,11 +32,13 @@ void cadastrarProduto() {
 		system("cls");
 		printf("Nome do produto: ");
 		scanf("%s", &produtos[p].nome);
+		fflush(stdin);
 		valido = false;
 		while (!valido) {
 			system("cls");
 			printf("Quantidade: ");
 			scanf("%d", &produtos[p].quantidade);
+			fflush(stdin);
 			if (produtos[p].quantidade > 0) {
 				valido = true;
 			} else {
@@ -50,11 +52,12 @@ void cadastrarProduto() {
 			system("cls");
 			printf("Preço unitário: ");
 			scanf("%f", &produtos[p].precoUni);
+			fflush(stdin);
 			if (produtos[p].precoUni > 0) {
 				valido = true;
 			} else {
 				system("cls");
-				printf("Quantidade inválida\n\n");
+				printf("Preço inválido\n\n");
 				system("pause");
 			}
 		}
@@ -70,55 +73,57 @@ void cadastrarProduto() {
 			printf("+-------------------------+\n\n");
 			printf("Confirmar cadastro? (s/n): ");
 			scanf("%c", &sn);
+			fflush(stdin);
 			if (sn == 's' or sn == 'S') {
 				valido = true;
 				confirma = true;
 				p++;
 			} else if (sn == 'n' or sn == 'N') {
 				valido = true;
-			}		
+			} else {
+				system("cls");
+				printf("Entrada inválida\n\n");
+				system("pause");
+			}
 		}
 	}
 }
 
 void buscarProduto() {
 	char buscar[30], sn;
+	bool valido;
 
 	while (true) {
 		system("cls");
+		printf("+-------------------------+\n");
 		for (int i = 0; i < p; i++) {
-			printf("+-------------------------+\n");
-			printf("Produto: %s\n", produtos[i].nome);
-			printf("+-------------------------+\n\n");
+			if (produtos[i].quantidade > 0) {
+				printf(" Produto: %s\n", produtos[i].nome);
+				printf("+-------------------------+\n");
+			}
 		}
+		printf("\nDigite 0 para sair\n");
 		printf("\nBuscar produto: ");
 		scanf("%s", &buscar);
 		fflush(stdin);
-		system("cls");
-		for (int i = 0; i < p; i++) {
-			if (strcmp(buscar, produtos[i].nome) == 0) {
-				printf("+-------------------------+\n");
-				printf(" Produto: %s\n", produtos[i].nome);
-				printf("+-------------------------+\n");
-				printf(" Quantidade: %d\n", produtos[i].quantidade);
-				printf("+-------------------------+\n");
-				printf(" Preço unitário: R$ %.2f\n", produtos[i].precoUni);
-				printf("+-------------------------+\n\n");
-				printf("Buscar outro produto (s/n): ");
-				scanf("%c", &sn);
-				if (sn == 's' or sn == 'S') {
-					break;
-				} else if (sn == 'n' or sn == 'N') {
-					system("cls");
-					return;
-				} else {
-					system("cls");
-					printf("Entrada inválida\n\n");
+		if (strcmp(buscar, "0") == 0) {
+			system("cls");
+			return;
+		} else {
+			system("cls");
+			for (int i = 0; i < p; i++) {
+				if (strcmp(buscar, produtos[i].nome) == 0) {
+					printf("+-------------------------+\n");
+					printf(" Produto: %s\n", produtos[i].nome);
+					printf("+-------------------------+\n");
+					printf(" Quantidade: %d\n", produtos[i].quantidade);
+					printf("+-------------------------+\n");
+					printf(" Preço unitário: R$ %.2f\n", produtos[i].precoUni);
+					printf("+-------------------------+\n\n");
 					system("pause");
-					break;
 				}
 			}
-		}
+		}			
 	}
 }
 
@@ -131,13 +136,15 @@ void realizarVenda() {
 		while (!valido) {
 			system("cls");
 			for (int i = 0; i < p; i++) {
-				printf("+-------------------------+\n");
-				printf(" Produto: %s\n", produtos[i].nome);
-				printf("+-------------------------+\n");
-				printf(" Quantidade: %d\n", produtos[i].quantidade);
-				printf("+-------------------------+\n");
-				printf(" Preço unitário: R$ %.2f\n", produtos[i].precoUni);
-				printf("+-------------------------+\n");
+				if (produtos[i].quantidade > 0) {
+					printf("+-------------------------+\n");
+					printf(" Produto: %s\n", produtos[i].nome);
+					printf("+-------------------------+\n");
+					printf(" Quantidade: %d\n", produtos[i].quantidade);
+					printf("+-------------------------+\n");
+					printf(" Preço unitário: R$ %.2f\n", produtos[i].precoUni);
+					printf("+-------------------------+\n");			
+				}
 			}
 			printf("\nTOTAL: %.2f\n", registros[r].total);
 			printf("\nDigite 0 para finalizar a compra\n");
