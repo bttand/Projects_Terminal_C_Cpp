@@ -20,6 +20,7 @@ struct venda {
 
 struct registro {
 	venda vendas[10];
+	int id;
 	int qntVenda;
 	float total;	
 } registros[10];
@@ -172,6 +173,7 @@ void realizarVenda() {
 					} 
 				}			
 			} else {
+				registros[r].id = r + 1;
 				registros[r].qntVenda = v;
 				r++;
 				sair = true;
@@ -181,12 +183,43 @@ void realizarVenda() {
 	}
 }
 
-float abrirCaixa() {
-	float valorInicial;
+void listarVenda() {
+	int i, procura;
+	bool sair;
 	
-	printf("Valor inicial do caixa: ");
-	scanf("%f", &valorInicial);
-	return valorInicial;
+	while (!sair) {
+		system("cls");
+		for (int y = 0; y < r; y++) {
+			printf("ID: %d - Total: %.2f\n", registros[y].id, registros[y].total);
+		}
+		printf("\nDigite 0 para sair\n");
+		printf("\nID da venda: ");
+		scanf("%d", &procura);
+		fflush(stdin);
+		if (procura == 0) {
+			system("cls");
+			return;
+		} else {
+			i = 0;
+			for (int y = 0; y < r; y++) {
+				if (procura == registros[y].id) {
+					for (i; i < registros[y].qntVenda; i++) {
+						printf("+-------------------------+\n");
+						printf(" Produto: %s\n", registros[y].vendas[i].nome);
+						printf("+-------------------------+\n");
+						printf(" Quantidade: %d\n", registros[y].vendas[i].quantidade);
+						printf("+-------------------------+\n");
+						printf(" Valor: R$ %.2f\n", registros[y].vendas[i].total);
+					}
+					printf("+-------------------------+\n");
+					printf(" Total da compra: %.2f\n", registros[y].total);
+					printf("+-------------------------+\n\n");
+					system("pause");
+				}
+				i = registros[y].qntVenda;
+			}
+		}
+	}
 }
 
 void fecharCaixa(float inicial) {
@@ -194,7 +227,7 @@ void fecharCaixa(float inicial) {
 	float total = 0;
 	
 	system("cls");
-	printf("**Vendas realizadas**\n\n");
+	printf("Vendas realizadas\n\n");
 	for (int y = 0; y < r; y++) {
 		for (i; i < registros[y].qntVenda; i++) {
 			printf("+-------------------------+\n");
@@ -211,21 +244,66 @@ void fecharCaixa(float inicial) {
 		total += registros[y].total;
 	}
 	total += inicial;
-	printf("Abrimento do Caixa: R$ %.2f\n", inicial);
-	printf("Total no fechamento: R$ %.2f\n\n", total);
+	printf("Valor na abertura: R$ %.2f\n", inicial);
+	printf("Valor no fechamento: R$ %.2f\n", total);
+	printf("Total de ganho: R$ %.2f\n\n", total-inicial);
 	system("pause");
 }
 
-void menu() {
+void menuFechado() {
 	printf("+---------------------------------+\n");
 	printf(" 1 - Cadastrar produto             \n");
 	printf("+---------------------------------+\n");
 	printf(" 2 - Buscar produto                \n");
 	printf("+---------------------------------+\n");
-	printf(" 3 - Realizar venda                \n");
+	printf(" 3 - Abrir caixa                   \n");
 	printf("+---------------------------------+\n");
-	printf(" 4 - Fechar caixa                  \n");
+	printf(" 0 - Sair                          \n");
 	printf("+---------------------------------+\n\n");
+}
+
+void menuAberto() {
+	printf("+---------------------------------+\n");
+	printf(" 1 - Realizar venda                \n");
+	printf("+---------------------------------+\n");
+	printf(" 2 - Listar venda                  \n");
+	printf("+---------------------------------+\n");
+	printf(" 3 - Fechar caixa                  \n");
+	printf("+---------------------------------+\n\n");
+}
+
+void abrirCaixa() {
+	int opcao;
+	bool sair;
+	float inicial;
+	
+	system("cls");
+	printf("Valor inicial do caixa: ");
+	scanf("%f", &inicial);
+    while (!sair) {
+		system("cls");
+		menuAberto();
+		printf("Escolha uma opção: ");
+		scanf("%d", &opcao);
+        fflush(stdin);
+        switch (opcao) {
+            case 1:
+                realizarVenda();
+                break;
+            case 2:
+                listarVenda();
+                break;
+            case 3:
+                fecharCaixa(inicial);
+                sair = true;
+                break;
+            default:
+                system("cls");
+			    printf("Opção inválida\n\n");
+			    system("pause");
+                break;
+        }
+    }
 }
 
 int main () {
@@ -234,10 +312,9 @@ int main () {
     bool sair = false;
     float inicial;
 	
-	inicial = abrirCaixa();
     while (!sair) {
         system("cls");
-        menu();
+        menuFechado();
         printf("Escolha uma opção: ");
         scanf("%d", &opcao);
         fflush(stdin);
@@ -249,10 +326,9 @@ int main () {
                 buscarProduto();
                 break;
             case 3:
-                realizarVenda();
+                abrirCaixa();
                 break;
-            case 4:
-            	fecharCaixa(inicial);
+            case 0:
             	sair = true;
                 break;
             default:
